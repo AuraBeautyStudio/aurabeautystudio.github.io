@@ -172,6 +172,7 @@ body{font-family:Arial,sans-serif;background:#0f0a0e;color:#fff;min-height:100vh
           <div id="heroThumb" style="width:100px;height:125px;background:#2a1f27;border-radius:6px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:rgba(255,255,255,0.25);overflow:hidden;flex-shrink:0">Vista previa</div>
           <div>
             <button class="sbtn sw" onclick="document.getElementById('heroUp').click()">&#x1F504; Cambiar foto principal</button>
+            <button class="sbtn sw" style="background:rgba(255,100,100,0.15);color:#ff8a8a;margin-left:0.5rem" onclick="removeHero()">&#x1F5D1; Quitar foto</button>
             <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:0.5rem">JPG o PNG recomendado.</p>
             <input type="file" id="heroUp" accept="image/*" style="display:none" onchange="previewHero(event)">
           </div>
@@ -550,7 +551,7 @@ var dragIdx = null;
 
 function loadPhotos(){try{var p=localStorage.getItem('ab_photos');if(p)photos=JSON.parse(p);}catch(e){}renderPhotos();loadHeroThumb();}
 function savePhotos(){try{localStorage.setItem('ab_photos',JSON.stringify(photos));}catch(e){}}
-function loadHeroThumb(){try{var h=localStorage.getItem('ab_hero');if(h){var thumb=document.getElementById('heroThumb');thumb.innerHTML='<img src="'+h+'" style="width:100%;height:100%;object-fit:cover">';}}catch(e){}}
+function loadHeroThumb(){var thumb=document.getElementById('heroThumb');var h=null;try{h=localStorage.getItem('ab_hero');}catch(e){}if(h){thumb.innerHTML='<img src="'+h+'" style="width:100%;height:100%;object-fit:cover">';}else{thumb.innerHTML='Vista previa';}}
 
 function renderPhotos(){
   var grid = document.getElementById('photoGrid');
@@ -614,6 +615,13 @@ function previewHero(e){
   };
   r.readAsDataURL(e.target.files[0]);
   e.target.value='';
+}
+
+function removeHero(){
+  if(!confirm('Quitar la foto principal? El sitio volver\u00e1 al fondo de color por defecto.'))return;
+  try{localStorage.removeItem('ab_hero');}catch(err){}
+  loadHeroThumb();
+  toast('Foto principal eliminada.');
 }
 
 // SERVICIOS
